@@ -4,24 +4,28 @@ class Chip8_CPU:
         self.PC = 0x200  # programs start at 0x200; below holds font sprites/reserved space
         self.I = 0  # index register (unused in this simple loader)
         self.V = [0] * 16  # general-purpose registers V0-VF
+        self.Stack = [0] * 16
         self.SP = 0 #stack pointer 
-        self.DT, self.ST = 0 # display and sound timers (tick @ 60 Hz)
+        self.DT = 0 
+        self.ST = 0 # display and sound timers (tick @ 60 Hz)
         self.display = [[False for _ in range(64)]for _ in range(32)] # sets a 2D list to all false, its Y,X
         self.keys = [False for _ in range(16)]
         self.draw_Dirty = False 
 
-    def reset(self):
-        self.memory = bytearray(4096)  # CHIP-8 has 4KB of addressable memory
+    def reset(self): # currently reset blows away all memory not just the ROM
+        #self.memory = bytearray(4096)  # CHIP-8 has 4KB of addressable memory
         self.PC = 0x200  # programs start at 0x200; below holds font sprites/reserved space
         self.I = 0  # index register (unused in this simple loader)
         self.V = [0] * 16  # general-purpose registers V0-VF
+        self.Stack = [0] * 16
         self.SP = 0 #stack pointer 
-        self.DT, self.ST = 0 # display and sound timers (tick @ 60 Hz)
+        self.DT = 0
+        self.ST = 0 # display and sound timers (tick @ 60 Hz)
         self.display = [[False for _ in range(64)]for _ in range(32)] # sets a 2D list to all false, its Y,X
         self.keys = [False for _ in range(16)]
         self.draw_Dirty = False 
 
-    def fetch(self): # returns 4 bytes based on the current PC
+    def fetch(self): # returns one 16 bit opcode based on the current PC
         FirstPart = self.memory[self.PC]
         SecondPart = self.memory[self.PC + 1]
         return (FirstPart << 8) | SecondPart
@@ -31,4 +35,7 @@ class Chip8_CPU:
         self.PC += 2
     
     def peek(self): # peek just at the first 2 bytes
-        return hex(self.memory[self.PC])
+        FirstPart = self.memory[self.PC]
+        SecondPart = self.memory[self.PC + 1]
+        return (FirstPart << 8) | SecondPart
+
