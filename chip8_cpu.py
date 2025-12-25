@@ -39,7 +39,7 @@ class Chip8_CPU:
         SecondPart = self.memory[self.PC + 1]
         return (FirstPart << 8) | SecondPart
 
-    def load_rom(rom_Address):
+    def load_rom(self, rom_Address):
         with open(rom_Address, "rb") as rom_file:
             rom_data = rom_file.read()
 
@@ -51,15 +51,15 @@ class Chip8_CPU:
 
         self.PC = 0x200
 
-    def decode(opcode):
+    def decode(self, opcode):
         nibOne = (opcode >> 12) & 0xF
         
         match nibOne:
             case 0x0:
-                print(f"{opcaode} family: CLS/RST")
+                print(f"{hex(opcode)} family: CLS/RST")
             case 0x1:
-                print(f"{opcaode} family: JP nnn")
+                print(f"{hex(opcode)} family: JP nnn")
             case 0x6:
-                print(f"{opcaode} family: LD Vx, kk")
-            case 0x7
-                print(f"{opcaode} family: ADD Vx, kk")
+                print(f"{hex(opcode)} family: LD Vx, kk")
+            case 0x7:
+                print(f"{hex(opcode)} family: ADD Vx, kk")
