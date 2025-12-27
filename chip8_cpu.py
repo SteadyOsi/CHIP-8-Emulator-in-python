@@ -52,6 +52,7 @@ class Chip8_CPU:
         self.PC = 0x200
 
     def execute_cls(self):
+        self.display = [[False for _ in range(64)]for _ in range(32)]
         self.draw_Dirty = True
         self.increment()
 
@@ -83,5 +84,8 @@ class Chip8_CPU:
                 x = ((opcode >> 8) & 0x000F)
                 kk = opcode & 0x00FF
                 self.execute_add_vx_kk(x, kk)
+            case _:
+                print(f"UNIMP OPCODE: {hex(opcode)} AT PC:{hex(self.PC)}")
+                self.increment()
 
  
