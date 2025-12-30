@@ -44,38 +44,114 @@ class Chip8_CPU:
 
         if len(rom_data) > 4096 - 0x200:
             print("Rom is too large")  # guard against ROMs that overflow memory
+            return
 
         for i,byte in enumerate(rom_data):
             self.memory[0x200 + i] = byte  # sequentially load ROM bytes into memory
 
         self.PC = 0x200
 
+    # 00E0 - CLS
     def execute_cls(self): #0x0 clear 
         self.display = [[False for _ in range(64)]for _ in range(32)]
         self.draw_Dirty = True
         self.increment()
 
+    # 00EE - RET
+
+    # 0nnn - SYS addr
+
+    # 1nnn - JP addr
     def execute_jp(self, nnn): #0x1 jump 
         self.PC = nnn
 
+    # 2nnn - CALL addr
+
+    # 3xkk - SE Vx, byte
+
+    # 4xkk - SNE Vx, byte
+
+    # 5xy0 - SE Vx, Vy
+
+    # 6xkk - LD Vx, byte
     def execute_ld_vx_kk(self, x, kk): #0x6 load
         self.V[x] = kk
         self.increment()
 
+    # 7xkk - ADD Vx, byte
     def execute_add_vx_kk(self, x, kk): #0x7 add 
         self.V[x] = (self.V[x] + kk) & 0xFF
         self.increment()
 
+    # 8xy0 - LD Vx, Vy
+
+    # 8xy1 - OR Vx, Vy
+
+    # 8xy2 - AND Vx, Vy
+
+    # 8xy3 - XOR Vx, Vy
+
+    # 8xy4 - ADD Vx, Vy
+
+    # 8xy5 - SUB Vx, Vy
+
+    # 8xy6 - SHR Vx {, Vy}
+
+    # 8xy7 - SUBN Vx, Vy
+
+    # 8xyE - SHL Vx {, Vy}
+
+    # 9xy0 - SNE Vx, Vy
+
+    # Annn - LD I, addr
     def execute_ld_i_nnn(self, nnn):
         self.I = nnn
         self.increment()
+
+    # Bnnn - JP V0, addr
+
+    # Cxkk - RND Vx, byte
+
+    # Dxyn - DRW Vx, Vy, nibble
+    def execute_drw(self, Vx, Vy, nibble):
+        return Vx, Vy, nibble
+
+    # Ex9E - SKP Vx
+
+    # ExA1 - SKNP Vx
+
+    # Fx07 - LD Vx, DT
+
+    # Fx0A - LD Vx, K
+
+    # Fx15 - LD DT, Vx
+
+    # Fx18 - LD ST, Vx
+
+    # Fx1E - ADD I, Vx
+
+    # Fx29 - LD F, Vx
+
+    # Fx33 - LD B, Vx
+
+    # Fx55 - LD [I], Vx
+
+    # Fx65 - LD Vx, [I]
  
     def decode(self, opcode):
         nibOne = (opcode >> 12) & 0xF
         
         match nibOne:
             case 0x0:
-                self.execute_cls()
+                if opcode == 0x00E0:
+                    self.execute_cls()
+                elif opcode == 0x00EE:
+                    print("implement opcode 0x00EE")
+                    self.increment()
+                else:
+                    print(f"UNIMP OPCODE: {hex(opcode)} AT PC:{hex(self.PC)}")
+                    self.increment()
+
             case 0x1:
                 nnn = opcode & 0x0FFF
                 self.execute_jp(nnn)
