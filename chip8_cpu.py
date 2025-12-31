@@ -117,10 +117,10 @@ class Chip8_CPU:
 
         masks = [0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01]
 
-        self.V[0xF] = False
+        self.V[0xF] = 0
 
-        screenX = Vx
-        screenY = Vy
+        screenX = self.V[Vx]
+        screenY = self.V[Vy]
 
         row = 0
         while row < n:
@@ -129,15 +129,16 @@ class Chip8_CPU:
             col = 0
             while col < len(masks):
 
-                bit = sprite & 0x80
+                bit = sprite & masks[col]
+
                 if (self.display[(screenY + row) % 32][(screenX + col) % 64] == True) and (bit == masks[col]):
-                    self.V[0xF] = True
-                
-                self.display[(screenY + row) % 32][(screenX + col) % 64] ^= True
+                    self.V[0xF] = 1
+                    self.display[(screenY + row) % 32][(screenX + col) % 64] ^= True
+
+                elif bit == masks[col]:
+                    self.display[(screenY + row) % 32][(screenX + col) % 64] ^= True
 
                 col += 1
-
-
 
             row += 1
 
@@ -196,6 +197,11 @@ class Chip8_CPU:
             case 0xA:
                 nnn = opcode & 0x0FFF
                 self.execute_ld_i_nnn(nnn)
+            case 0xD: 
+                Vx = (opcode & 0x0F00) >> 8
+                Vy = (opcode & 0x00F0) >> 4
+                n = opcode & 0x000F
+                self.execute_drw(Vx, Vy, n)
 
             case _:
                 print(f"UNIMP OPCODE: {hex(opcode)} AT PC:{hex(self.PC)}")
