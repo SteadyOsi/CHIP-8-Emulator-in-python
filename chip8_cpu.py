@@ -6,7 +6,7 @@ class Chip8_CPU:
         self.V = [0] * 16  # general-purpose registers V0-VF
         self.Stack = [0] * 16
         self.SP = 0 #stack pointer 
-        self.DT = 0 
+        self.DT = 0
         self.ST = 0 # display and sound timers (tick @ 60 Hz)
         self.display = [[False for _ in range(64)]for _ in range(32)] # sets a 2D list to all false, its Y,X
         self.keys = [False for _ in range(16)]
@@ -50,6 +50,14 @@ class Chip8_CPU:
             self.memory[0x200 + i] = byte  # sequentially load ROM bytes into memory
 
         self.PC = 0x200
+
+    def timer_update(self):
+        if self.DT > 0:
+            self.DT -= 1
+            print(f"DT updated to: {self.DT}")
+        if self.ST > 0:
+            self.ST -= 1
+            print(f"ST updated to: {self.ST}")
 
     # 00E0 - CLS
     def execute_cls(self): #0x0 clear 

@@ -1,26 +1,29 @@
-rom_Address = "CHIP8-Roms/chip8-roms/programs/IBM Logo.ch8"  # test ROM to load
+import time
 
-def whats_In_Mem(mem):  # still in works
-    for i in mem:
-        print(i)
+def do_60hz_thing():
+    print(f"TICK {TICK}")
+    print(f"LAST {last}")
+    print(f"now {now}")
+    print("")
 
-memory = bytearray(4096)  # CHIP-8 has 4KB of addressable memory
-PC = 0x200  # programs start at 0x200; below holds font sprites/reserved space
-I = 0  # index register (unused in this simple loader)
-V = [0] * 16  # general-purpose registers V0-VF
+def hz_timer():
+    TICK = 1/10
+    last = time.time()
 
-with open(rom_Address, "rb") as rom_file:
-    rom_data = rom_file.read()
+    while True:
+        now = time.time()
+        if now - last >= TICK:
+            last += TICK
+            do_60hz_thing()
 
-if len(rom_data) > 4096 - 0x200:
-    print("Rom is too large")  # guard against ROMs that overflow memory
+def count_down():
+    count = 60 * 1
 
-for i,byte in enumerate(rom_data):
-    memory[0x200 + i] = byte  # sequentially load ROM bytes into memory
+    start = time.time()
 
-i = 0
-while(i < 8):
-    print(f"memory address {hex(PC + i)} : {hex(memory[PC + i])}")  # peek at first few bytes
-    i += 1
+    while time.time() - start <= count:
+        print(time.time() - start)
 
-print(f"value of PC {hex(PC)}")
+
+# call functinos 
+count_down()
