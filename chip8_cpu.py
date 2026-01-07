@@ -230,7 +230,7 @@ class Chip8_CPU:
                 self.execute_drw(Vx, Vy, n)
             case 0xE:
                 nibThreeFour = (opcode & 0x00FF)
-                Vx = (opcode & 0x0F00) >> 4
+                Vx = (opcode & 0x0F00) >> 8
                 
                 if nibThreeFour == 0x9E:
                     self.execute_SKP_V(Vx)
