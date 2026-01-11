@@ -3,21 +3,36 @@ import time
 
 cpu = chip.Chip8_CPU()
 cpu.reset()
-cpu.load_rom("/home/minion/Documents/GitHub/CHIP8-Roms/chip8-roms/programs/IBM Logo.ch8")
+cpu.load_rom("/home/jk/Documents/GitHub/chip8-roms/programs/IBM Logo.ch8")
 cpu.DT = 120
 
-i = 0
-TICK = 1/60
-last = time.perf_counter()
+TICK = 1/60         # Timer tick rate
+CPU_HZ = 700        # Instruction rate (normally between 500-1000)
+CPU_STEP = 1/CPU_HZ
 
-while(i <= 30):
-    #60hz timer
+last = time.perf_counter()
+timer_acc = 0.0
+cpu_acc = 0.0
+
+i=0 # temp solution for debuggin 
+while i <= 50:
     now = time.perf_counter()
-    while now - last >= TICK:
-        last += TICK
+    time_dif = now - last
+    last = now
+
+    timer_acc += time_dif
+    cpu_acc += time_dif
+
+    #60hz timer, sound and display 
+    while timer_acc >= TICK:
+        timer_acc -= TICK
         cpu.timer_update()
 
-    opcode = cpu.fetch()
-    print(f"PC:{hex(cpu.PC)} | opcode:{hex(opcode)}")
-    cpu.decode(opcode)
+    #CPU execution at CPU HZ timer 
+    while cpu_acc >= CPU_STEP:
+        cpu_acc -= CPU_STEP
+        opcode = cpu.fetch()
+        print(f"PC:{hex(cpu.PC)} | opcode:{hex(opcode)}")
+        cpu.decode(opcode)
+    
     i+= 1
