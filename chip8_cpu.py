@@ -82,12 +82,26 @@ class Chip8_CPU:
         self.SP += 1
         self.PC = nnn
 
-
     # 3xkk - SE Vx, byte
+    def execute_SE_vx_kk(self, x, kk):
+        if self.V[x] == kk:
+            self.PC += 4
+        else: 
+            self.increment()
 
     # 4xkk - SNE Vx, byte
+    def execute_SNE_vx_kk(self, x, kk):
+        if self.V[x] != kk:
+            self.PC += 4
+        else: 
+            self.increment()
 
     # 5xy0 - SE Vx, Vy
+    def execute_SE_vx_vy(self, x, y):
+        if self.V[x] == self.V[y]:
+            self.PC += 4
+        else: 
+            self.increment()
 
     # 6xkk - LD Vx, byte
     def execute_ld_vx_kk(self, x, kk): #0x6 load
@@ -225,6 +239,22 @@ class Chip8_CPU:
             case 0x2:
                 nnn = opcode & 0x0FFF
                 self.execute_CALL(nnn)
+            case 0x3:
+                x = (opcode & 0x0F00) >> 8
+                kk = opcode & 0x00FF
+                self.execute_SE_vx_kk(x, kk)
+            case 0x4:
+                x = (opcode & 0x0F00) >> 8
+                kk = opcode & 0x00FF
+                self.execute_SNE_vx_kk(x, kk)
+            case 0x5:
+                x = (opcode & 0x0F00) >> 8
+                y = (opcode & 0x00F0) >> 4 
+                if (opcode & 0x000F) == 0:
+                    self.execute_SE_vx_vy(x, y)
+                else:
+                    print(f"UNIMP OPCODE: {hex(opcode)} AT PC:{hex(self.PC)}")
+                    self.increment()
             case 0x6:
                 x = ((opcode >> 8) & 0x000F)
                 kk = opcode & 0x00FF
