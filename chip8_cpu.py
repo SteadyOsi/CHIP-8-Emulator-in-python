@@ -73,6 +73,7 @@ class Chip8_CPU:
         self.PC = self.Stack[self.SP]
 
     # 0nnn - SYS addr
+    # normally do nothing 
 
     # 1nnn - JP addr
     def execute_jp(self, nnn): #0x1 jump 
@@ -116,10 +117,19 @@ class Chip8_CPU:
         self.increment()
 
     # 8xy0 - LD Vx, Vy
+    def execute_LD_vx_vy(self, x, y):
+        self.V[x] = self.V[y]
+        self.increment()
 
     # 8xy1 - OR Vx, Vy
+    def execute_OR_vx_vy(self, x, y):
+        self.V[x] = self.V[x] | self.V[y]
+        self.increment()
 
     # 8xy2 - AND Vx, Vy
+    def execute_AND_vx_vy(self, x, y):
+        self.V[x] = self.V[x] & self.V[y]
+        self.increment()
 
     # 8xy3 - XOR Vx, Vy
 
