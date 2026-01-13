@@ -27,7 +27,12 @@ def count_down():
         print(time.time() - start)
 
 def randomHex():
-    ran = random.randbytes(2)
-    print(ran.hex() & 0x0F)
+    ran = random.randint(0,255)
+
+    res = ran & 0xFF
+
+    print(res | 0xF4)
+
+
 # call functinos 
 randomHex()

@@ -1,3 +1,5 @@
+import random
+
 class Chip8_CPU:
     def __init__(self):
         self.memory = bytearray(4096)  # CHIP-8 has 4KB of addressable memory
@@ -148,6 +150,8 @@ class Chip8_CPU:
         self.PC = nnn + self.V[0]
 
     # Cxkk - RND Vx, byte
+    def execute_RND_vx_kk(self, x, kk):
+        self.V[x] = (random.randint(0, 255) & kk)
 
     # Dxyn - DRW Vx, Vy, nibble
     def execute_drw(self, Vx, Vy, n):
@@ -192,7 +196,6 @@ class Chip8_CPU:
             self.increment()
         else:
             self.increment()
-
 
     # ExA1 - SKNP Vx
     def execute_SKNP_V(self, Vx):
@@ -243,17 +246,21 @@ class Chip8_CPU:
             case 0x1:
                 nnn = opcode & 0x0FFF
                 self.execute_jp(nnn)
+
             case 0x2:
                 nnn = opcode & 0x0FFF
                 self.execute_CALL(nnn)
+
             case 0x3:
                 x = (opcode & 0x0F00) >> 8
                 kk = opcode & 0x00FF
                 self.execute_SE_vx_kk(x, kk)
+
             case 0x4:
                 x = (opcode & 0x0F00) >> 8
                 kk = opcode & 0x00FF
                 self.execute_SNE_vx_kk(x, kk)
+
             case 0x5:
                 x = (opcode & 0x0F00) >> 8
                 y = (opcode & 0x00F0) >> 4 
@@ -262,17 +269,35 @@ class Chip8_CPU:
                 else:
                     print(f"UNIMP OPCODE: {hex(opcode)} AT PC:{hex(self.PC)}")
                     self.increment()
+
             case 0x6:
                 x = ((opcode >> 8) & 0x000F)
                 kk = opcode & 0x00FF
                 self.execute_ld_vx_kk(x, kk)
+
             case 0x7:
                 x = ((opcode >> 8) & 0x000F)
                 kk = opcode & 0x00FF
                 self.execute_add_vx_kk(x, kk)
+
+            case 0x9:
+                x = (opcode & 0x0F00) >> 8
+                y = (opcode & 0x00F0) >> 4 
+                self.execute_SNE_vx_vy(x, y)
+
             case 0xA:
                 nnn = opcode & 0x0FFF
                 self.execute_ld_i_nnn(nnn)
+
+            case 0xB:
+                nnn = opcode & 0x0FFF
+                self.execute_JP_V0(nnn)
+
+            case 0xC:
+                x = ((opcode >> 8) & 0x000F)
+                kk = opcode & 0x00FF
+                self.execute_RND_vx_kk(kk)
+
             case 0xD: 
                 Vx = (opcode & 0x0F00) >> 8
                 Vy = (opcode & 0x00F0) >> 4

@@ -4,6 +4,7 @@ import time
 cpu = chip.Chip8_CPU()
 cpu.reset()
 cpu.load_rom("/home/jk/Documents/GitHub/chip8-roms/programs/IBM Logo.ch8")
+#cpu.load_rom("/home/jk/Documents/GitHub/chip8-roms/programs/IBM Logo.ch8")
 cpu.DT = 120
 
 TICK = 1/60         # Timer tick rate
@@ -34,5 +35,10 @@ while i <= 50:
         opcode = cpu.fetch()
         print(f"PC:{hex(cpu.PC)} | opcode:{hex(opcode)}")
         cpu.decode(opcode)
+
+    # this is only for debuggin since if you do a loop of less then x it doesnt have enough time to run the actual CPU clock    
+    opcode = cpu.fetch()
+    print(f"PC:{hex(cpu.PC)} | opcode:{hex(opcode)}")
+    cpu.decode(opcode)
     
     i+= 1
