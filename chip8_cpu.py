@@ -356,15 +356,50 @@ class Chip8_CPU:
                 kk = opcode & 0x00FF
                 self.execute_add_vx_kk(x, kk)
             
-            #8xy0
-            #8xy1
-            #8xy2
-            #8xy3
-            #8xy4
-            #8xy5
-            #8xy6
-            #8xy7
-            #8xyE
+            case 0x8:
+                nibFour = (opcode & 0x000F)
+                x = (opcode & 0x0F00) >> 8
+                y = (opcode & 0x00F0) >> 4
+
+                #8xy0
+                if nibFour == 0:
+                    self.execute_LD_vx_vy(x, y)
+
+                #8xy1
+                elif nibFour == 1:
+                    self.execute_OR_vx_vy(x, y)
+
+                #8xy2
+                elif nibFour == 2:
+                    self.execute_AND_vx_vy(x, y)
+
+                #8xy3
+                elif nibFour == 3:
+                    self.execute_XOR_vx_vy(x, y)
+
+                #8xy4
+                elif nibFour == 4:
+                    self.execute_ADD_vx_vy(x, y)
+
+                #8xy5
+                elif nibFour == 5:
+                    self.execute_SUB_vx_vy(x, y)
+
+                #8xy6
+                elif nibFour == 6:
+                    self.execute_SHR_vx(x)
+
+                #8xy7
+                elif nibFour == 7:
+                    self.execute_SUBN_x_y(x, y)
+
+                #8xyE
+                elif nibFour == 0xE:
+                    self.execute_SHL_vx(x)
+                
+                else:
+                    print(f"UNIMP OPCODE: {hex(opcode)} AT PC:{hex(self.PC)}")
+                    self.increment()
 
             case 0x9:
                 x = (opcode & 0x0F00) >> 8
@@ -389,6 +424,7 @@ class Chip8_CPU:
                 Vy = (opcode & 0x00F0) >> 4
                 n = opcode & 0x000F
                 self.execute_drw(Vx, Vy, n)
+
             case 0xE:
                 nibThreeFour = (opcode & 0x00FF)
                 Vx = (opcode & 0x0F00) >> 8
@@ -400,15 +436,50 @@ class Chip8_CPU:
                 else:
                     print(f"UNIMP OPCODE: {hex(opcode)} AT PC:{hex(self.PC)}")
                     self.increment()
-            #Fx07
-            #Fx0A
-            #Fx15
-            #Fx18
-            #Fx1E
-            #Fx29
-            #Fx33
-            #Fx55
-            #Fx65
+
+            case 0xF:
+                nibThreeFour = (opcode & 0x00FF)
+                x = (opcode & 0x0F00) >> 8
+
+                #Fx07
+                if nibThreeFour == 0x07: 
+                    self.execute_LD_vx_dt(x)
+                
+                #Fx0A
+                if nibThreeFour == 0x0A:
+                    self.execute_LD_vx_k(x)
+
+                #Fx15
+                if nibThreeFour == 0x15:
+                    self.execute_LD_DT_vx(x)
+
+                #Fx18
+                if nibThreeFour == 0x18:
+                    self.execute_LD_ST_vx(x)
+
+                #Fx1E
+                if nibThreeFour == 0x1E:
+                    self.execute_ADD_I_vx(x)
+
+                #Fx29
+                if nibThreeFour == 0x29:
+                    self.execute_LD_F_vx(x)
+
+                #Fx33
+                if nibThreeFour == 0x33:
+                    self.execute_LD_B_vx(x)
+
+                #Fx55
+                if nibThreeFour == 0x55:
+                    self.execute_LD_I_vx(x)
+
+                #Fx65
+                if nibThreeFour == 0x65:
+                    self.execute_LD_vx_I(x)
+
+                else: 
+                    print(f"UNIMP OPCODE: {hex(opcode)} AT PC:{hex(self.PC)}")
+                    self.increment()
             
 
             case _:
