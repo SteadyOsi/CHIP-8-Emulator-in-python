@@ -400,6 +400,16 @@ class Chip8_CPU:
                 else:
                     print(f"UNIMP OPCODE: {hex(opcode)} AT PC:{hex(self.PC)}")
                     self.increment()
+            #Fx07
+            #Fx0A
+            #Fx15
+            #Fx18
+            #Fx1E
+            #Fx29
+            #Fx33
+            #Fx55
+            #Fx65
+            
 
             case _:
                 print(f"UNIMP OPCODE: {hex(opcode)} AT PC:{hex(self.PC)}")
