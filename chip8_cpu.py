@@ -143,12 +143,17 @@ class Chip8_CPU:
 
     # 8xy5 - SUB Vx, Vy
     def execute_SUB_vx_vy(self, x, y):
-        self.V[x] -= self.V[y]
+        if self.V[x] >= self.V[y]:
+            self.V[0xF] = 1
+        else:
+            self.V[0xF] = 0
+
+        self.V[x] = (self.V[x] - self.V[y]) & 0xFF
         self.increment() 
 
     # 8xy6 - SHR Vx {, Vy}
     def execute_SHR_vx(self, x):
-        self.V[0xF] = (self.V[x] & 0x0F)
+        self.V[0xF] = (self.V[x] & 0x01)
         self.V[x] >>= 1 # or self.V[x] = self.V[x] >> 1 .... Okay I cant tell if this goes >> or <<... well see
         self.increment()
 
@@ -311,8 +316,9 @@ class Chip8_CPU:
                 if opcode == 0x00E0:
                     self.execute_cls()
                 elif opcode == 0x00EE:
-                    if self.SP <= 0: print("STACK UNDER FLOW ERROR")
-                    elif self.SP > 16: print("STACK OVER FLOW ERROR")
+                    if self.SP <= 0: 
+                        print("STACK UNDER FLOW ERROR")
+                        self.increment()
                     else: 
                         self.execute_RET()
                 else:
@@ -446,35 +452,35 @@ class Chip8_CPU:
                     self.execute_LD_vx_dt(x)
                 
                 #Fx0A
-                if nibThreeFour == 0x0A:
+                elif nibThreeFour == 0x0A:
                     self.execute_LD_vx_k(x)
 
                 #Fx15
-                if nibThreeFour == 0x15:
+                elif nibThreeFour == 0x15:
                     self.execute_LD_DT_vx(x)
 
                 #Fx18
-                if nibThreeFour == 0x18:
+                elif nibThreeFour == 0x18:
                     self.execute_LD_ST_vx(x)
 
                 #Fx1E
-                if nibThreeFour == 0x1E:
+                elif nibThreeFour == 0x1E:
                     self.execute_ADD_I_vx(x)
 
                 #Fx29
-                if nibThreeFour == 0x29:
+                elif nibThreeFour == 0x29:
                     self.execute_LD_F_vx(x)
 
                 #Fx33
-                if nibThreeFour == 0x33:
+                elif nibThreeFour == 0x33:
                     self.execute_LD_B_vx(x)
 
                 #Fx55
-                if nibThreeFour == 0x55:
+                elif nibThreeFour == 0x55:
                     self.execute_LD_I_vx(x)
 
                 #Fx65
-                if nibThreeFour == 0x65:
+                elif nibThreeFour == 0x65:
                     self.execute_LD_vx_I(x)
 
                 else: 
