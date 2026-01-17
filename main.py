@@ -15,8 +15,8 @@ last = time.perf_counter()
 timer_acc = 0.0
 cpu_acc = 0.0
 
-i=0 # temp solution for debuggin 
-while i <= 50:
+
+while True:
     now = time.perf_counter()
     time_dif = now - last
     last = now
@@ -35,10 +35,4 @@ while i <= 50:
         opcode = cpu.fetch()
         print(f"PC:{hex(cpu.PC)} | opcode:{hex(opcode)}")
         cpu.decode(opcode)
-
-    # this is only for debuggin since if you do a loop of less then x it doesnt have enough time to run the actual CPU clock    
-    opcode = cpu.fetch()
-    print(f"PC:{hex(cpu.PC)} | opcode:{hex(opcode)}")
-    cpu.decode(opcode)
     
-    i+= 1

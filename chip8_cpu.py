@@ -138,7 +138,8 @@ class Chip8_CPU:
 
     # 8xy4 - ADD Vx, Vy
     def execute_ADD_vx_vy(self, x, y):
-        self.V[x] += self.V[y]
+        self.V[0xF] = 1 if self.V[x] + self.V[y] > 255 else 0
+        self.V[x] = (self.V[x] + self.V[y]) & 0xFF
         self.increment() 
 
     # 8xy5 - SUB Vx, Vy
@@ -191,7 +192,8 @@ class Chip8_CPU:
 
     # Cxkk - RND Vx, byte
     def execute_RND_vx_kk(self, x, kk):
-        self.V[x] = (random.randint(0, 255) & kk)
+        self.V[x] = random.randint(0, 255)
+        self.increment()
 
     # Dxyn - DRW Vx, Vy, nibble
     def execute_drw(self, Vx, Vy, n):
@@ -259,7 +261,7 @@ class Chip8_CPU:
             if self.keys[i]: 
                 self.V[x] = i
                 self.increment()
-                break 
+                break
 
     # Fx15 - LD DT, Vx
     def execute_LD_DT_vx(self, x):
@@ -273,7 +275,7 @@ class Chip8_CPU:
 
     # Fx1E - ADD I, Vx
     def execute_ADD_I_vx(self, x):
-        self.I =+ self.V[x]
+        self.I += self.V[x]
         self.increment()
 
     # Fx29 - LD F, Vx
@@ -299,6 +301,8 @@ class Chip8_CPU:
             self.memory[self.I + index] = self.V[index]
             index += 1
 
+        self.increment()
+
     # Fx65 - LD Vx, [I]
     def execute_LD_vx_I(self, x):
         index = 0
@@ -306,6 +310,8 @@ class Chip8_CPU:
         while index <= x:
             self.V[index] = self.memory[self.I + index]
             index += 1
+
+        self.increment()
 
  
     def decode(self, opcode):
@@ -410,7 +416,12 @@ class Chip8_CPU:
             case 0x9:
                 x = (opcode & 0x0F00) >> 8
                 y = (opcode & 0x00F0) >> 4 
-                self.execute_SNE_vx_vy(x, y)
+                if (opcode & 0x000F) == 0:
+                    self.execute_SNE_vx_vy(x, y)
+                else:
+                    print(f"UNIMP OPCODE: {hex(opcode)} AT PC:{hex(self.PC)}")
+                    self.increment()
+                
 
             case 0xA:
                 nnn = opcode & 0x0FFF
@@ -423,7 +434,7 @@ class Chip8_CPU:
             case 0xC:
                 x = ((opcode >> 8) & 0x000F)
                 kk = opcode & 0x00FF
-                self.execute_RND_vx_kk(kk)
+                self.execute_RND_vx_kk(x, kk)
 
             case 0xD: 
                 Vx = (opcode & 0x0F00) >> 8
