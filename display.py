@@ -11,8 +11,8 @@ class Graphics:
     
 
     def init_display(self, scale):
-        self.WIDTH *= scale
-        self.HEIGHT *= scale
+        W = ssale
+        H = scale
 
         pygame.init()
 
@@ -20,4 +20,4 @@ class Graphics:
         pygame.display.set_caption("CHIP-8-PY")
 
     def render(self, cpu, screen, scale):
-        
+        return 0
