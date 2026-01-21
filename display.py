@@ -11,13 +11,31 @@ class Graphics:
     
 
     def init_display(self, scale):
-        W = ssale
-        H = scale
+
+        self.scale = scale
 
         pygame.init()
 
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+        screen = pygame.display.set_mode((self.WIDTH * self.scale, self.HEIGHT * self.scale))
         pygame.display.set_caption("CHIP-8-PY")
 
-    def render(self, cpu, screen, scale):
-        return 0
+        return screen
+        
+
+    def render(self, cpu, screen):
+
+        self.cpuFrameBuffer = cpu.display 
+
+        # Rendering
+        y = 0
+        while y < self.HEIGHT: 
+            x = 0
+            while x < self.WIDTH:
+                if cpu.display[y][x] == 1:
+                    pygame.draw.rect(screen, "green", pygame.Rect(x*self.scale, y*self.scale, self.scale, self.scale))
+                x += 1
+            y += 1
+
+        pygame.display.flip()
+
+        cpu.draw_Dirty = False

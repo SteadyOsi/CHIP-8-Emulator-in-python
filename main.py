@@ -4,7 +4,7 @@ import time
 
 cpu = chip.Chip8_CPU()
 cpu.reset()
-cpu.load_rom("/home/minion/Documents/GitHub/CHIP8-Roms/chip8-roms/programs/IBM Logo.ch8")
+cpu.load_rom("CHIP8-Roms/chip8-roms/games/Space Invaders [David Winter].ch8")
 #cpu.load_rom("/home/jk/Documents/GitHub/chip8-roms/programs/IBM Logo.ch8")
 cpu.DT = 120
 
@@ -18,9 +18,9 @@ cpu_acc = 0.0
 
 graphics = display.Graphics()
 
-graphics.init_display(1)
+screen = graphics.init_display(20)
 
-while True:
+while cpu.running:
     now = time.perf_counter()
     time_dif = now - last
     last = now
@@ -32,6 +32,8 @@ while True:
     while timer_acc >= TICK:
         timer_acc -= TICK
         cpu.timer_update()
+
+        graphics.render(cpu, screen)
 
     #CPU execution at CPU HZ timer 
     while cpu_acc >= CPU_STEP:

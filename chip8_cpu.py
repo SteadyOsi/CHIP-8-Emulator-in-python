@@ -13,6 +13,7 @@ class Chip8_CPU:
         self.display = [[False for _ in range(64)]for _ in range(32)] # sets a 2D list to all false, its Y,X
         self.keys = [False for _ in range(16)]
         self.draw_Dirty = False 
+        self.running = True
 
     def reset(self): # currently reset blows away all memory not just the ROM
         #self.memory = bytearray(4096)  # CHIP-8 has 4KB of addressable memory
@@ -26,6 +27,7 @@ class Chip8_CPU:
         self.display = [[False for _ in range(64)]for _ in range(32)] # sets a 2D list to all false, its Y,X
         self.keys = [False for _ in range(16)]
         self.draw_Dirty = False 
+        self.running = True
 
     def fetch(self): # returns one 16 bit opcode based on the current PC
         FirstPart = self.memory[self.PC]
