@@ -39,3 +39,6 @@ class Graphics:
         pygame.display.flip()
 
         cpu.draw_Dirty = False
+
+    def end_game(self, cpu):
+        return 0

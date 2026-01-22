@@ -4,7 +4,7 @@ import time
 
 cpu = chip.Chip8_CPU()
 cpu.reset()
-cpu.load_rom("CHIP8-Roms/chip8-roms/games/Space Invaders [David Winter].ch8")
+cpu.load_rom("/home/jk/Documents/GitHub/chip8-roms/games/Cave.ch8")
 #cpu.load_rom("/home/jk/Documents/GitHub/chip8-roms/programs/IBM Logo.ch8")
 cpu.DT = 120
 
