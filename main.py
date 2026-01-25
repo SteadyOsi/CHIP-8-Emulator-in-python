@@ -1,5 +1,6 @@
 import chip8_cpu as chip
 import display
+import input
 import time
 
 cpu = chip.Chip8_CPU()
@@ -17,7 +18,7 @@ timer_acc = 0.0
 cpu_acc = 0.0
 
 graphics = display.Graphics()
-
+inputs = input.controls()
 screen = graphics.init_display(20)
 
 while cpu.running:
@@ -32,8 +33,9 @@ while cpu.running:
     while timer_acc >= TICK:
         timer_acc -= TICK
         cpu.timer_update()
-
+        inputs.input_handler(cpu)
         graphics.render(cpu, screen)
+
 
     #CPU execution at CPU HZ timer 
     while cpu_acc >= CPU_STEP:
