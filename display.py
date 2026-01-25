@@ -25,6 +25,7 @@ class Graphics:
     def render(self, cpu, screen):
 
         self.cpuFrameBuffer = cpu.display 
+        screen.fill("black")
 
         # Rendering
         y = 0

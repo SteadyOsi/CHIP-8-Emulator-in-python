@@ -17,6 +17,8 @@ def make_beep(freq=440, duration_ms=200, volume=0.4, sample_rate=44100):
 
     return pygame.mixer.Sound(buffer=buf)
 
-beep = make_beep(freq=240, duration_ms=200)
-beep.play()
-pygame.time.delay(500)
+def beep():
+
+    beep = make_beep(freq=440, duration_ms=(16))
+    beep.play()
+    # pygame.time.delay(200)

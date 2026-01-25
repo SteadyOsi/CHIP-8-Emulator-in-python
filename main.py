@@ -2,11 +2,12 @@ import chip8_cpu as chip
 import display
 import input
 import time
+import audio
 
 cpu = chip.Chip8_CPU()
 cpu.reset()
-cpu.load_rom("/home/jk/Documents/GitHub/chip8-roms/games/Cave.ch8")
-#cpu.load_rom("/home/jk/Documents/GitHub/chip8-roms/programs/IBM Logo.ch8")
+#cpu.load_rom("/home/jk/Documents/GitHub/chip8-roms/games/Cave.ch8")
+cpu.load_rom("/home/minion/Documents/GitHub/CHIP8-Roms/chip8-roms/programs/Keypad Test [Hap, 2006].ch8")
 cpu.DT = 120
 
 TICK = 1/60         # Timer tick rate
@@ -32,9 +33,13 @@ while cpu.running:
     #60hz timer, sound and display 
     while timer_acc >= TICK:
         timer_acc -= TICK
+
         cpu.timer_update()
         inputs.input_handler(cpu)
         graphics.render(cpu, screen)
+
+        if cpu.ST > 0:
+            audio.beep()
 
 
     #CPU execution at CPU HZ timer 
