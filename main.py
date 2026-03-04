@@ -6,7 +6,7 @@ import audio
 
 cpu = chip.Chip8_CPU()
 cpu.reset()
-cpu.load_rom("/home/jk/Documents/GitHub/chip8-roms/games/Space Invaders [David Winter].ch8")
+cpu.load_rom("/home/jk/Documents/GitHub/chip8-roms/games/Pong (1 player).ch8")
 cpu.DT = 120
 
 TICK = 1/60         # Timer tick rate
